@@ -54,6 +54,9 @@ class Search extends React.Component {
           <input type="text" name="search"></input>
           <button>Search</button>
         </form>
+        <div>
+          <button onClick={this.props.handleSort}>Sort by Name</button>
+        </div>
         <div>{shows}</div>
         {/*
         {this.props.results.map((show) => <Show show={show.show.name} image={show.show.image.medium}/>)}
@@ -67,9 +70,11 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleSort = this.handleSort.bind(this);
     this.state = {
       results,
-      keyword: null
+      keyword: null,
+      sortByName: true
     }
   }
 
@@ -79,10 +84,33 @@ class Home extends React.Component {
     this.setState({keyword: searchTerm});
   }
 
+  handleSort() {
+    let sortedResults;
+    if (this.state.sortByName) {
+      sortedResults = [].concat(this.state.results).sort((a,b) => {
+        if (a.show.name > b.show.name) {
+          return 1;
+        } else if (a.show.name < b.show.name) {
+          return -1;
+        }
+      })
+    } else {
+      sortedResults = [].concat(this.state.results).sort((a,b) => {
+        if (a.show.name > b.show.name) {
+          return -1;
+        } else if (a.show.name < b.show.name) {
+          return 1;
+        }
+      })
+    }
+
+    this.setState({ sortByName: !this.state.sortByName, results: sortedResults })
+  }
+
   render() {
     return (
       <div>
-        <Search handleClick={this.handleClick} results={this.state.results} query={this.state.keyword}/>
+        <Search handleClick={this.handleClick} results={this.state.results} query={this.state.keyword} handleSort={this.handleSort}/>
       </div>
     )
   }
